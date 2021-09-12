@@ -1,0 +1,45 @@
+name: $(date:yyyyMMdd)$(rev:.r)
+
+trigger:
+  branches:
+    include:
+    - 'master'
+    - 'main'
+  paths:
+    include:
+    - 'terraform/shared/*'
+
+variables:
+  serviceConnection: 'az-sub-devops'
+  terraformWorkingDirectory: '$(System.DefaultWorkingDirectory)/terraform/shared'
+  terraformVersion: '0.13.0'
+  backendResourceGroupName: 'terraform'
+  backendContainerName: 'tfstate'
+  backendStorageAccountName: 'terraformstate20210722'
+  backendKey: terraform.tfstate
+  
+stages:
+  - stage: Validate
+    displayName: Validate
+    jobs:
+    - job: TerraformIntegrationJob
+      displayName: TerraformIntegrationJob - CI Job
+      pool:
+        vmImage: ubuntu-20.04
+      steps:      
+      - task: ms-devlabs.custom-terraform-tasks.custom-terraform-installer-task.TerraformInstaller@0
+        displayName: 'Install Terraform $(terraformVersion)'
+        inputs:
+          terraformVersion: $(terraformVersion)
+
+      - bash: docker run --rm -v "$(pwd):/src" tfsec/tfsec-alpine /src
+        workingDirectory: $(terraformWorkingDirectory)
+        displayName: 'Run tfsec Analysis'
+
+      - bash: terraform init -backend=false
+        workingDirectory: $(terraformWorkingDirectory)
+        displayName: 'Terraform init'
+
+      - bash: terraform validate
+        workingDirectory: $(terraformWorkingDirectory)
+        displayName: 'Terraform validate'
