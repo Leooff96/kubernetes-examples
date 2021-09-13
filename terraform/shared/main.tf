@@ -69,12 +69,7 @@ resource "azurerm_private_endpoint" "azurecr" {
     is_manual_connection           = false
     subresource_names              = ["registry"]
   }
-}
 
-resource "null_resource" "create_registry_dns" {
-  triggers = {
-    id = 1
-  }
   provisioner "local-exec" {
     interpreter = ["/bin/bash", "-c"]
     working_dir = path.module
@@ -86,7 +81,6 @@ resource "null_resource" "create_registry_dns" {
     }
   }
 }
-
 
 // VM JUMPBOX
 resource "azurerm_public_ip" "pip" {
