@@ -2,8 +2,8 @@ name: 'Terraform'
 
 on:
   push:
-    paths:
-      - 'terraform/shared/**'
+    # paths:
+    #   - 'terraform/shared/**'
     branches:
     - main
   pull_request:
