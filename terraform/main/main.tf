@@ -21,7 +21,7 @@ resource "azurerm_resource_group" "rg" {
 }
 
 resource "azurerm_key_vault" "kv" {
-  name                = "main20210911-kv"
+  name                        = "main20210911-kv"
   location                    = azurerm_resource_group.rg.location
   resource_group_name         = azurerm_resource_group.rg.name
   enabled_for_disk_encryption = true
@@ -166,9 +166,9 @@ resource "azurerm_kubernetes_cluster" "aks" {
     enabled = true
 
     azure_active_directory {
-      managed            = true
-      tenant_id          = data.azurerm_client_config.current.tenant_id
-      azure_rbac_enabled = true
+      managed                = true
+      tenant_id              = data.azurerm_client_config.current.tenant_id
+      azure_rbac_enabled     = true
       admin_group_object_ids = [var.admin_group_id]
     }
   }
