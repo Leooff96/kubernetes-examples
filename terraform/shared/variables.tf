@@ -18,7 +18,7 @@ variable "address_space_vnet_shared" {
 }
 
 variable "scriptfile" {
-  type = string
+  type    = string
   default = "startupVM.sh"
 }
 

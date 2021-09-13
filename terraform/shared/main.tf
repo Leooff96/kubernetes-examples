@@ -5,11 +5,11 @@ resource "azurerm_resource_group" "shared" {
 
 // ACR
 resource "azurerm_container_registry" "acr" {
-  name                = var.acrname
-  resource_group_name = azurerm_resource_group.shared.name
-  location            = azurerm_resource_group.shared.location
-  sku                 = "Premium"
-  admin_enabled       = true
+  name                          = var.acrname
+  resource_group_name           = azurerm_resource_group.shared.name
+  location                      = azurerm_resource_group.shared.location
+  sku                           = "Premium"
+  admin_enabled                 = true
   public_network_access_enabled = false
 }
 
@@ -22,10 +22,10 @@ resource "azurerm_virtual_network" "vnet" {
 }
 
 resource "azurerm_subnet" "acrsubnet" {
-  name                 = "acr-subnet"
-  resource_group_name  = azurerm_resource_group.shared.name
-  virtual_network_name = azurerm_virtual_network.vnet.name
-  address_prefixes     = var.address_space_vnet_shared.acrsubnet
+  name                                           = "acr-subnet"
+  resource_group_name                            = azurerm_resource_group.shared.name
+  virtual_network_name                           = azurerm_virtual_network.vnet.name
+  address_prefixes                               = var.address_space_vnet_shared.acrsubnet
   enforce_private_link_endpoint_network_policies = true
 }
 
@@ -77,11 +77,11 @@ resource "null_resource" "create_registry_dns" {
   }
   provisioner "local-exec" {
     interpreter = ["/bin/bash", "-c"]
-    working_dir = "${path.module}"
-    command = "./config_dns_acr.sh"
+    working_dir = path.module
+    command     = "./config_dns_acr.sh"
     environment = {
       AZUREACR_NAME = azurerm_container_registry.acr.name
-      RG_NAME = azurerm_resource_group.shared.name
+      RG_NAME       = azurerm_resource_group.shared.name
       ENDPOINT_NAME = azurerm_private_endpoint.azurecr.name
     }
   }
